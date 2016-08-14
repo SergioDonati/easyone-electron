@@ -1,8 +1,10 @@
 'usse strict';
 
+require('./mainprocess/ipcHandlers')();
+
 module.exports = {
-	Component: require('./Component'),
-	App: require('./App'),
-	Controller: require('./Controller'),
-	Modal: require('./Modal')
+	Component: require('.renderprocess/Component'),
+	app: require('./renderprocess/App'),
+	Controller: require('./renderprocess/Controller'),
+	Modal: require('./renderprocess/Modal')
 }
