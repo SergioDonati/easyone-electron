@@ -3,9 +3,9 @@
 const EventEmitter = require('events');
 
 class App {
-	constructor(options){
+	constructor(){
 		this._property = {};
-		this._options = options || {};
+		this._options = {};
 		this._eventEmitter = new EventEmitter();
 
 		this.modalManager: require('./modal')(this);
@@ -38,6 +38,10 @@ class App {
 
 	setProperty(name, value){
 		this._property[name] = value;
+	}
+
+	setOption(name, value){
+		_options[name] = value;
 	}
 }
 

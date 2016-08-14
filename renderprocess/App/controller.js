@@ -3,14 +3,23 @@
 let controllerContainer = null;
 let activeController = null;
 
-module.exports = function(app){
-	let extend = {};
-
-	if(app._options.container_id){
-		controllerContainer = window.document.getElementById(app._options.container_id);
+function configure(options){
+	if(options.container_id){
+		controllerContainer = window.document.getElementById(options.container_id);
 	}else{
 		controllerContainer = window.document.body;
 	}
+}
+
+module.exports = function(app){
+
+	Object.observe(app._options, function(changes){
+		changes.forEach(function(change){
+			if(change.name == 'container_id') configure(app._options);
+		});
+	});
+
+	let extend = {};
 
 	extend.startNew = function(controller){
 		if(typeof(controller) === 'string' && app._options.controllersPath){
