@@ -25,7 +25,7 @@ module.exports.classNameToSelector = function(className){
 
 module.exports.createAsyncFun = function(fun, allowCallback){
 	return function(){
-		let funargs = arguments;
+		let funargs = Array.from(arguments);
 		let callback = null;
 		if(arguments.length > 0){
 			let lastArg = arguments[arguments.length - 1];
@@ -42,7 +42,7 @@ module.exports.createAsyncFun = function(fun, allowCallback){
 			}
 		});
 		eventEmitter.on('success', function(){
-			let args = arguments;
+			let args = Array.from(arguments);
 			args = args.unshift(null);
 			if(callback) callback.apply(undefined, args);
 		});
