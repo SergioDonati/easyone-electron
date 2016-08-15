@@ -73,7 +73,7 @@ module.exports = function(app){
 			document.body.appendChild(modalContainerElement);
 			eventEmitter.emit('success', modal);
 		});
-	}
+	});
 
 	return extend;
 }
