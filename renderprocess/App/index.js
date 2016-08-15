@@ -17,7 +17,7 @@ class App {
 		}.bind(this));
 	}
 
-	get isReady(){ return _isReady; }
+	get isReady(){ return this._isReady; }
 
 	on(eventName, listener){
 		if(eventName === 'ready' && this.isReady){
