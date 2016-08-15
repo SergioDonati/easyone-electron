@@ -1,6 +1,6 @@
 'use strict';
 
-const Component = require('./Component/index');
+const Component = require('./Component');
 
 module.exports = class Modal extends Component{
 

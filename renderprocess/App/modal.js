@@ -1,7 +1,5 @@
 'use strict';
 
-const Modal = require('../Modal');
-
 function createElement(name, id, className){
 	let element = document.createElement(name);
 	if (id) element.setAttribute('id', id);
@@ -50,7 +48,7 @@ module.exports = function(app){
 				return;
 			}
 		}
-		if(!modal || !modal instanceof Modal){
+		if(!modal){
 			console.error('Invalid modal!');
 			return;
 		}
