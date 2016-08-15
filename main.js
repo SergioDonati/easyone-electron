@@ -10,7 +10,7 @@ function isRenderer () {
   return process.type === 'renderer'
 }
 
-if(isRenderer){
+if(isRenderer()){
 	module.exports = {
 		Component: require('./renderprocess/Component'),
 		app: require('./renderprocess/App'),

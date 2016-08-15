@@ -8,8 +8,8 @@ class App {
 		this._options = {};
 		this._eventEmitter = new EventEmitter();
 
-		this.modalManager: require('./modal')(this);
-		this.controllerManager: require('./controller')(this);
+		this.modalManager = require('./modal')(this);
+		this.controllerManager = require('./controller')(this);
 
 		process.nextTick(function(){
 			this._isReady = true;
