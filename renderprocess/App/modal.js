@@ -1,5 +1,7 @@
 'use strict';
 
+const utils = require('../utils');
+
 function createElement(name, id, className){
 	let element = document.createElement(name);
 	if (id) element.setAttribute('id', id);
@@ -38,35 +40,39 @@ module.exports = function(app){
 
 	let extend = {};
 
-	extend.startNew = function(modal){
+	extend.startNew = utils.createAsyncFun(function(modal, eventEmitter){
 		if(typeof(modal) === 'string' && app._options.modalsPath){
 			try{
 				modal = require(app._options.modalsPath + '/' + modal);
 				modal = new modal();
 			}catch(e){
-				console.error(e.stack);
+				eventEmitter.emit('error', e);
 				return;
 			}
 		}
 		if(!modal){
-			console.error('Invalid modal!');
+			eventEmitter.emit('error', new Error('Invalid modal!'));
 			return;
 		}
-		if(activeModal) return;
-
+		if(activeModal) {
+			eventEmitter.emit('error', new Error('One modal just active!'));
+			return;
+		}
 		let modalContainerElement = createModalElement({ closeListener: defaultCloseBtnListener });
 		modal.on('close_modal', function(){
 			modalContainerElement.parentNode.removeChild(modalContainerElement);
 			activeModal = null;
 		});
-		process.nextTick(function(){
-			modal.render(modal.renderArgs, (err, htmlElement) => {
-				if(!htmlElement) return;
-				activeModal = modal;
-				modalContainerElement.injectModal(htmlElement);
-			});
+		modal.render(modal.renderArgs, (err, htmlElement) => {
+			if(!htmlElement) {
+				eventEmitter.emit('error', new Error('Invalid modal! no htmlElement returned'));
+				return;
+			}
+			activeModal = modal;
+			modalContainerElement.injectModal(htmlElement);
+			document.body.appendChild(modalContainerElement);
+			eventEmitter.emit('success', modal);
 		});
-		return modal;
 	}
 
 	return extend;
