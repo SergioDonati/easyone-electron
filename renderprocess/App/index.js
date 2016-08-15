@@ -20,6 +20,10 @@ class App {
 	get isReady(){ return _isReady; }
 
 	on(eventName, listener){
+		if(eventName === 'ready' && this.isReady){
+			listener(this);
+			return;
+		}
 		this._eventEmitter.on(eventName, listener);
 	}
 
