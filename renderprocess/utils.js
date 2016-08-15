@@ -23,6 +23,14 @@ module.exports.classNameToSelector = function(className){
 	return selector;
 }
 
+module.exports.addStyleToDOM = function(css, uniqueID){
+	let style = document.createElement('style');
+	style.type = 'text/css';
+	style.innerHTML = css;
+	style.setAttribute('id', uniqueID);
+	document.getElementsByTagName('head')[0].appendChild(style);
+}
+
 module.exports.createAsyncFun = function(fun, allowCallback){
 	return function(){
 		let funargs = Array.from(arguments);

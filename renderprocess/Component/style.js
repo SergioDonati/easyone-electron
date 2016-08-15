@@ -3,14 +3,6 @@
 const less = require('less');
 const utils = require('../utils');
 
-function addStyleToDOM(css, uniqueID){
-	let style = document.createElement('style');
-	style.type = 'text/css';
-	style.innerHTML = css;
-	style.id = 'style_'+uniqueID;
-	document.getElementsByTagName('head')[0].appendChild(style);
-}
-
 function compile(data, wrapWith, options, callback){
 	if(data && data.trim() != '' && wrapWith){
 		data = wrapWith + '{ ' + data + ' }';
@@ -41,7 +33,7 @@ module.exports = function(component){
 		let wrapWith = utils.classNameToSelector(component._DOMContainerClass);
 
 		if(component._css){
-			addStyleToDOM(component._css, styleId);
+			utils.addStyleToDOM(component._css, styleId);
 			component._eventEmitter.emit('style-rendered', component._css);
 			if(callback) callback(null, component._css);
 		}else if(component.style){

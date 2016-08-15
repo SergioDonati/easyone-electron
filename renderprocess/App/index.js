@@ -10,6 +10,7 @@ class App {
 
 		this.modalManager = require('./modal')(this);
 		this.controllerManager = require('./controller')(this);
+		this.loadStyle = require('./loadStyle');
 
 		process.nextTick(function(){
 			this._isReady = true;
