@@ -1,23 +1,16 @@
 'use strict';
 
-let controllerContainer = null;
 let activeController = null;
 
-function configure(options){
+function getControllerContainer(options){
 	if(options.container_id){
-		controllerContainer = window.document.getElementById(options.container_id);
+		return window.document.getElementById(options.container_id);
 	}else{
-		controllerContainer = window.document.body;
+		return window.document.body;
 	}
 }
 
 module.exports = function(app){
-
-	Object.observe(app._options, function(changes){
-		changes.forEach(function(change){
-			if(change.name == 'container_id') configure(app._options);
-		});
-	});
 
 	let extend = {};
 
@@ -34,6 +27,7 @@ module.exports = function(app){
 			console.error('Invalid controller.');
 			return;
 		}
+		let controllerContainer = getControllerContainer(app._options);
 		if(!controllerContainer) return;
 		process.nextTick(function(){
 			controllerContainer.innerHTML = '';
@@ -42,7 +36,7 @@ module.exports = function(app){
 					console.error('Invalid rendered.');
 					return;
 				}
-				actveController = controller;
+				activeController = controller;
 				controllerContainer.appendChild(html);
 			});
 		});

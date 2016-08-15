@@ -41,7 +41,8 @@ class App {
 	}
 
 	setOption(name, value){
-		_options[name] = value;
+		this._options[name] = value;
+		this._eventEmitter.emit('options-change', this._options);
 	}
 }
 
