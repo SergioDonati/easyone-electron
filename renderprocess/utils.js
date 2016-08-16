@@ -7,10 +7,10 @@ let uniqueCallId = 0;
 
 module.exports.readFile = function (filePath, callback){
 	let callId = 'utils-'+ (uniqueCallId++);
-	ipcRenderer.once('readFile-reply-'+callId, (event, text) => {
+	ipcRenderer.once('easyone-readFile-reply-'+callId, (event, text) => {
 		callback(null, text);
 	});
-	ipcRenderer.send('readFile', { id:callId, filePath: filePath });
+	ipcRenderer.send('easyone-readFile', { id:callId, filePath: filePath });
 }
 
 // Convert className to selector
@@ -21,6 +21,13 @@ module.exports.classNameToSelector = function(className){
 		selector+= '.'+names[i];
 	}
 	return selector;
+}
+
+module.exports.createElement = function(name, id, className){
+	let element = document.createElement(name);
+	if (id) element.setAttribute('id', id);
+	if (className) element.className = className;
+	return element;
 }
 
 module.exports.addStyleToDOM = function(css, uniqueID){
@@ -54,7 +61,7 @@ module.exports.createAsyncFun = function(fun, allowCallback){
 			args = args.unshift(null);
 			if(callback) callback.apply(undefined, args);
 		});
-		funargs.push(eventEmitter);
+		funargs.unshift(eventEmitter);
 		process.nextTick(function(){
 			fun.apply(undefined, funargs);
 		});

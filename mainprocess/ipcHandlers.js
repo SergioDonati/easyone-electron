@@ -4,7 +4,10 @@ const {ipcMain} = require('electron');
 const fs = require('fs');
 
 module.exports = function(){
-	if(!ipcMain) return;
+	if(!ipcMain) {
+		console.warn('ipcMain is void');
+		return;
+	}
 	ipcMain.on('easyone-readFile', function(event, args){
 		fs.readFile(args.filePath, (err, data) => {
   			if (err) {

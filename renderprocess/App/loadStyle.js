@@ -5,7 +5,7 @@ const utils = require('../utils');
 
 let defaultLessOptions = { logLevel:2 };
 
-module.exports = utils.createAsyncFun(function(styleId, stylePath, eventEmitter){
+module.exports = utils.createAsyncFun(function(eventEmitter, styleId, stylePath){
 	let exist = document.getElementById(styleId);
 	if(exist){
 		eventEmitter.emit('success', exist.innerHTML);

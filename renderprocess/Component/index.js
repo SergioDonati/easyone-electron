@@ -3,14 +3,14 @@
 const {ipcRenderer} = require('electron'),
 	EventEmitter = require('events'),
 	app = require('../App'),
-	ChildrenManager = require('./children'),
+	ChildrenManager = require('./ChildrenManager'),
 	styleRenderer = require('./style'),
 	renderer = require('./render'),
-	bindEvents = require('./binder').bindEvents;
+	DOMEventManager = require('./DOMEventManager');
 let count = 0;
 
 module.exports = class Component {
-	constructor ( ){
+	constructor (){
 		this.renderArgs = {
 			locals: {},
 			options: {
@@ -22,17 +22,17 @@ module.exports = class Component {
 		this.uniqueID = this.name + '_' + count;
 		count++;
 		this._eventEmitter = new EventEmitter();
-		this._DOMListeners = {};
 		this._DOMContainerClass = 'component-'+this.name+' component';
 
 		this._childrenManager = new ChildrenManager(this);
+		this._DOMEventManager = new DOMEventManager(this);
 
 		this.render = renderer(this);
 
 		this.on('rendered', function(){
-			this._childrenManager.installChildren();
 			styleRenderer(this);
-			bindEvents(this.HTMLElement, this._DOMListeners);
+			this._DOMEventManager.run(this.HTMLElement);
+			this._childrenManager.installChildren();
 			this._childrenManager.loadViewComponents();
 		});
 
@@ -54,12 +54,22 @@ module.exports = class Component {
 		this._childrenManager.addChild(id, container_selector, component);
 	}
 
-	getChild(id){
-		return this._childrenManager.getChild(id);
+	getChildComponent(id){
+		return this._childrenManager.getChildComponent(id);
 	}
 
 	addDOMListener(eventName, listener){
-		this._DOMListeners[eventName] = listener;
+		this._DOMEventManager.addListener(eventName, listener);
+	}
+
+	addChildDOMListener(childId, eventName, listener){
+		let childComponent = this.getChildComponent(childId);
+		if(childComponent) childComponent.addDOMListener(eventName, listener);
+		else{
+			this._childrenManager.on('new-child', function(id, childComponent){
+				if(id == childId) childComponent.addDOMListener(eventName, listener);
+			});
+		}
 	}
 
 	get currentApp(){ return app; }

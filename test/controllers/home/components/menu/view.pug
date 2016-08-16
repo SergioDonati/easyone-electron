@@ -1,0 +1,5 @@
+mixin link(text, eventFun)
+    li: a(href='#', bind-event=true, bind-event-click=eventFun)= text
+
+ul
+    +link("Test", "menuTestClick")

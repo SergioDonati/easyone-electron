@@ -1,9 +1,16 @@
 {
 	"name": "easyone-electron",
-	"version": "0.0.13",
+	"version": "0.0.15",
 	"description": "A base framework for create electron application",
 	"main": "main.js",
 	"author": "donati.sergio@gmail.com",
+	"scripts":{
+		"test": "electron ./test/starter.js"
+	},
+	"repository":{
+		"type": "git",
+		"url": "git://github.com/SergioDonati/easyone-electron.git"
+	},
 	"dependencies": {
 		"less": "^2.7.1",
 		"pug": "^2.0.0-beta4"

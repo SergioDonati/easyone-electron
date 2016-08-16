@@ -57,5 +57,5 @@ module.exports = function(component){
 		}
 	}
 
-	return render;
+	render();
 };

@@ -1,6 +1,9 @@
 'use strict';
 
-const EventEmitter = require('events');
+const EventEmitter = require('events'),
+	ControllersManager = require('./ControllersManager'),
+	ModalsManager = require('./ModalsManager'),
+	loadStyle = require('./loadStyle');
 
 class App {
 	constructor(){
@@ -8,14 +11,18 @@ class App {
 		this._options = {};
 		this._eventEmitter = new EventEmitter();
 
-		this.modalManager = require('./modal')(this);
-		this.controllerManager = require('./controller')(this);
-		this.loadStyle = require('./loadStyle');
+		this.modalManager = new ModalsManager(this);
+		this.controllerManager = new ControllersManager(this);
+		this.loadStyle = loadStyle;
 
-		process.nextTick(function(){
-			this._isReady = true;
-			this._eventEmitter.emit('ready', this);
-		}.bind(this));
+		function ready(){
+			process.nextTick(function(){
+				this._isReady = true;
+				this._eventEmitter.emit('ready', this);
+			}.bind(this));
+		};
+		if(document.readyState === 'complete') ready.call(this);
+		else document.addEventListener('DOMContentLoaded', ready.bind(this), false);
 	}
 
 	get isReady(){ return this._isReady; }
@@ -47,7 +54,7 @@ class App {
 
 	setOption(name, value){
 		this._options[name] = value;
-		this._eventEmitter.emit('options-change', this._options);
+		this._eventEmitter.emit('options-change', name, this._options);
 	}
 }
 
