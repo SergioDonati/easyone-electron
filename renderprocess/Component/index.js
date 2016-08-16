@@ -1,22 +1,13 @@
 'use strict';
 
-const {ipcRenderer} = require('electron');
-const EventEmitter = require('events');
-const App = require('../App');
+const {ipcRenderer} = require('electron'),
+	EventEmitter = require('events'),
+	app = require('../App'),
+	ChildrenManager = require('./children'),
+	styleRenderer = require('./style'),
+	renderer = require('./render'),
+	bindEvents = require('./binder').bindEvents;
 let count = 0;
-
-function install_child(parentElement, child){
-	if (!parentElement || !child) return;
-	let element;
-	if(child.container_selector === '_parent') element = parentElement;
-	else element = parentElement.querySelector(child.container_selector);
-	if (!element) return;
-	let exist = parentElement.querySelector('#'+child.component.uniqueID);
-	if (exist) return;	// just exist
-	child.component.render(child.component.renderArgs, function(err, html){
-		element.appendChild(html);
-	});
-}
 
 module.exports = class Component {
 	constructor ( ){
@@ -30,19 +21,19 @@ module.exports = class Component {
 		this.name = this.constructor.name.toLowerCase();
 		this.uniqueID = this.name + '_' + count;
 		count++;
-		this._children = [];
 		this._eventEmitter = new EventEmitter();
 		this._DOMListeners = {};
 		this._DOMContainerClass = 'component-'+this.name+' component';
 
-		this.render = require('./render')(this);
+		this._childrenManager = new ChildrenManager(this);
 
-		this.on('rendered', this._install_children);
+		this.render = renderer(this);
+
 		this.on('rendered', function(){
-			require('./style')(this)();
-		});
-		this.on('rendered', function(){
-			require('./binder').bindEvents(this.HTMLElement, this._DOMListeners);
+			this._childrenManager.installChildren();
+			styleRenderer(this);
+			bindEvents(this.HTMLElement, this._DOMListeners);
+			this._childrenManager.loadViewComponents();
 		});
 
 		this.init();
@@ -54,36 +45,24 @@ module.exports = class Component {
 	get viewTemplate(){ return this._viewTemplate; }
 	get stylePath(){ return null; }
 	get style(){ return this._style; }
+	get componentsPath(){ return app._options.controllersPath+'/../' ; }
 
 	init(){}
 
-	_install_children(){
-		let parentElement = this.HTMLElement;
-		if(!parentElement || !this._children) return;
-		for(let i=0;i<this._children.length;i++){
-			let child = this._children[i];
-			if(!child.installed){
-				install_child(parentElement, child);
-				child.installed = true;
-			}
-		}
+	addChild(id, container_selector, component){
+		if (!component instanceof Component) return;
+		this._childrenManager.addChild(id, container_selector, component);
 	}
 
-	addChild(container_selector, component){
-		if (!component instanceof Component || !component.render) return;
-		this._children.push({
-			component: component,
-			container_selector: container_selector,
-			installed: false
-		});
-		if(this.HTMLElement) this._install_children();
+	getChild(id){
+		return this._childrenManager.getChild(id);
 	}
 
 	addDOMListener(eventName, listener){
 		this._DOMListeners[eventName] = listener;
 	}
 
-	get currentApp(){ return App; }
+	get currentApp(){ return app; }
 
 	on(eventName, callback){
 		this._eventEmitter.on(eventName, callback.bind(this));
