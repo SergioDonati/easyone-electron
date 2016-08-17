@@ -18,5 +18,5 @@ if(isRenderer()){
 		Modal: require('./renderprocess/Modal')
 	}
 }else{
-	require('./mainprocess/ipcHandlers')();
+	module.exports = require('./mainprocess/ipcHandlers');
 }

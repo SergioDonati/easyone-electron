@@ -1,6 +1,6 @@
 'use strict';
 
-const {Controller} = require('../../../main.js');
+const {Controller, app} = require('../../../main.js');
 
 module.exports = class Home extends Controller{
 
@@ -12,6 +12,12 @@ module.exports = class Home extends Controller{
         self.addChildDOMListener('main-menu', 'menuTestClick', function(){
             self._childrenManager.clear('#content');
             self.addChild("test", "#content", "test");
+        });
+
+        self.addChildDOMListener('main-menu', 'testModal', function(){
+            app.modalManager.startNew("msg").catch(function(e){
+                console.error(e.stack);
+            });
         });
     }
 

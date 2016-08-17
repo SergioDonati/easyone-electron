@@ -22,16 +22,17 @@ function createModalElement(args){
 	return container;
 }
 
-let defaultCloseBtnListener = function(e){
-	e.preventDefault();
-	if (activeModal) activeModal.close();
-}
+
 
 module.exports = class ModalsManager{
 	constructor(app){
 		this._app = app;
 		this._appOptions = app._options;
 		this._activeModal = null;
+		this.defaultCloseBtnListener = function(e){
+			e.preventDefault();
+			if (this._activeModal) this._activeModal.close();
+		}
 	}
 
 	new(modalPath){
@@ -41,37 +42,37 @@ module.exports = class ModalsManager{
 
 	startNew(modal){
 		let manager = this;
-		return utils.createAsyncFun(function(eventEmitter, modal){
+		return new Promise(function(resolve, reject){
 			if(typeof(modal) === 'string'){
 				try{
 					modal = manager.new(modal);
 				}catch(e){
-					eventEmitter.emit('error', e);
+					reject(e);
 					return;
 				}
 			}
 			if(!modal){
-				eventEmitter.emit('error', new Error('Invalid modal!'));
+				reject(new Error('Invalid modal!'));
 				return;
 			}
 			if(manager._activeModal) {
-				eventEmitter.emit('error', new Error('One modal just active!'));
+				reject(new Error('One modal just active!'));
 				return;
 			}
-			let modalContainerElement = createModalElement({ closeListener: defaultCloseBtnListener });
-			modal.on('close_modal', function(){
+			let modalContainerElement = createModalElement({ closeListener: manager.defaultCloseBtnListener.bind(manager) });
+			modal.once('modalClosed', function(){
 				modalContainerElement.parentNode.removeChild(modalContainerElement);
 				manager._activeModal = null;
 			});
 			modal.render(modal.renderArgs, (err, htmlElement) => {
 				if(!htmlElement) {
-					eventEmitter.emit('error', new Error('Invalid modal! no htmlElement returned'));
+					reject(new Error('Invalid modal! no htmlElement returned'));
 					return;
 				}
 				manager._activeModal = modal;
 				modalContainerElement.injectModal(htmlElement);
 				document.body.appendChild(modalContainerElement);
-				eventEmitter.emit('success', modal);
+				resolve(modal);
 			});
 		});
 	}

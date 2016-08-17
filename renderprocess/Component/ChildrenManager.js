@@ -39,15 +39,30 @@ module.exports = class ComponentsManager{
 	}
 
 	static installChild(parentElement, child){
-		if (!parentElement || !child) return;
-		let containerElement = ComponentsManager.getChildContainer(parentElement, child);
-		if (!containerElement) return;
-		let exist = containerElement.querySelector('#'+child.component.uniqueID);
-		if (exist) return;	// just exist
-		child.component.render(child.component.renderArgs, function(err, html){
-			containerElement.appendChild(html);
+		return new Promise(function (resolve, reject){
+			if (!parentElement || !child) return reject(new Error('Invalid parentElement or child!'));
+			if (child.installed == true) return resolve(false);	// just installed
+			let containerElement = ComponentsManager.getChildContainer(parentElement, child);
+			if (!containerElement) return reject(new Error('container for child component not found!'));
+			let exist = containerElement.querySelector('#'+child.component.uniqueID);
+			if (exist) {
+				if(child.component.rendered){
+					child.installed = true;
+				}else{
+					reject(new Error('component id is just used in DOM, but component isn\'t installed.'));
+				}
+				return;
+			}
+			child.component.render(function(err, html){
+				if(err){
+					reject(err);
+				}else{
+					containerElement.appendChild(html);
+					child.installed = true;
+					resolve(child);
+				}
+			});
 		});
-		child.installed = true;
 	}
 
 	installChildren(){
@@ -100,10 +115,14 @@ module.exports = class ComponentsManager{
 		if ( index > -1){
 			this._children.splice(index, 1);
 		}
-		let containerElement = ComponentsManager.getChildContainer(this._parent.HTMLElement, child);
-		if (!containerElement) return;
-		let element = containerElement.querySelector('#'+child.component.uniqueID);
-		if (element) containerElement.removeChild(element);
+		child.component.remove();
+	}
+
+	removeAllChild(){
+		for(let i=0;i<this._children.length;i++){
+			let child = this._children[i];
+			this.removeChild(child);
+		}
 	}
 
 	removeChildById(id){

@@ -22,7 +22,6 @@ module.exports = class DOMEventManager{
 				console.error(err.stack);
 			}
 		}
-		console.log(eventName+' binded');
 		this._listenerBinded[element][eventName] = listener;
 		element.addEventListener(eventName, listener, true);
 	}

@@ -15,7 +15,7 @@ module.exports = class Modal extends Component{
 	close(){
 		if(this.isClosed) return;
 		this._closed = true;
-		this._eventEmitter.emit('close_modal');
+		this._eventEmitter.emit('modalClosed');
 	}
 
 	render(){

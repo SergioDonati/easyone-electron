@@ -27,36 +27,46 @@ module.exports = class ControllersManager{
 		}
 	}
 
+	removeController(){
+		if(this._activeController){
+			this._activeController.remove();
+			this._activeController = null;
+		}
+		let controllerContainer = this.getControllerContainer();
+		controllerContainer.innerHTML = '';
+	}
+
 	startNew(controller){
 		let manager = this;
-		return utils.createAsyncFun(function(eventEmitter){
+		return new Promise(function(resolve, reject){
 			if(typeof(controller) === 'string'){
 				try{
 					controller = manager.new(controller);
 				}catch(e){
-					eventEmitter.emit('error', e);
+					reject(e);
 					return;
 				}
 			}
 			if(!controller || !controller.render){
-				eventEmitter.emit('error', new Error('Invalid controller!'));
+				reject(new Error('Invalid controller!'));
 				return;
 			}
 			let controllerContainer = manager.getControllerContainer();
 			if(!controllerContainer) {
-				eventEmitter.emit('error', new Error('Controller container not found!'));
+				reject(new Error('Controller container not found!'));
 				return;
 			}
-			controllerContainer.innerHTML = '';
-			controller.render(controller.renderArgs, (err, html) => {
+			controller.render((err, html) => {
+				if(err) return reject(err);
 				if(!html){
-					eventEmitter.emit('error', new Error('Invalid rendered.'));
+					reject(new Error('Invalid rendered.'));
 					return;
 				}
+				manager.removeController();
 				manager._activeController = controller;
 				controllerContainer.appendChild(html);
-				eventEmitter.emit('success', controller);
+				resolve(controller);
 			});
-		})();
+		});
 	}
 }

@@ -13,14 +13,11 @@ module.exports = class Component {
 	constructor (){
 		this.renderArgs = {
 			locals: {},
-			options: {
-				pretty: true,
-				compileDebug: true
-			}
+			options: null
 		};
 		this.name = this.constructor.name.toLowerCase();
-		this.uniqueID = this.name + '_' + count;
-		count++;
+		this.uniqueID = this.name + '_' + (count++);
+		this.styleUniqueID = 'style-'+this.uniqueID;
 		this._eventEmitter = new EventEmitter();
 		this._DOMContainerClass = 'component-'+this.name+' component';
 
@@ -30,7 +27,7 @@ module.exports = class Component {
 		this.render = renderer(this);
 
 		this.on('rendered', function(){
-			styleRenderer(this);
+			if(this.stylePath) app.styleManager.injectStyleFile(this.styleUniqueID, this.stylePath);
 			this._DOMEventManager.run(this.HTMLElement);
 			this._childrenManager.installChildren();
 			this._childrenManager.loadViewComponents();
@@ -41,11 +38,11 @@ module.exports = class Component {
 
 	// Override this for return the values
 	get viewPath(){ return null; }
-	get view(){ return this._view; }
-	get viewTemplate(){ return this._viewTemplate; }
+	get view(){ return null; }
 	get stylePath(){ return null; }
-	get style(){ return this._style; }
 	get componentsPath(){ return app._options.controllersPath+'/../' ; }
+
+	get rendered(){ return !!this.HTMLElement; }
 
 	init(){}
 
@@ -76,5 +73,16 @@ module.exports = class Component {
 
 	on(eventName, callback){
 		this._eventEmitter.on(eventName, callback.bind(this));
+	}
+
+	once(eventName, callback){
+		this._eventEmitter.once(eventName, callback.bind(this));
+	}
+
+	remove(){
+		if(this.HTMLElement && this.HTMLElement.parentNode) this.HTMLElement.parentNode.removeChild(this.HTMLElement);
+		app.styleManager.removeStyle(this.styleUniqueID);
+		this._childrenManager.removeAllChild();
+		this._removed = true;
 	}
 }

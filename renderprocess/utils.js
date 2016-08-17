@@ -5,6 +5,22 @@ const EventEmitter = require('events');
 
 let uniqueCallId = 0;
 
+module.exports.renderPugFile = function (filePath, locals, options, callback){
+	let callId = 'utils-'+ (uniqueCallId++);
+	ipcRenderer.once('easyone-pug-render-reply-'+callId, (event, html) => {
+		callback(null, html);
+	});
+	ipcRenderer.send('easyone-pug-render', { id:callId, filePath: filePath, options: options, locals: locals });
+}
+
+module.exports.renderLessFile = function (filePath, wrapWith, options, callback){
+	let callId = 'utils-'+ (uniqueCallId++);
+	ipcRenderer.once('easyone-less-render-reply-'+callId, (event, css) => {
+		callback(null, css);
+	});
+	ipcRenderer.send('easyone-less-render', { id:callId, filePath: filePath, wrapWith: wrapWith, options: options });
+}
+
 module.exports.readFile = function (filePath, callback){
 	let callId = 'utils-'+ (uniqueCallId++);
 	ipcRenderer.once('easyone-readFile-reply-'+callId, (event, text) => {

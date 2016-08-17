@@ -3,7 +3,7 @@
 const EventEmitter = require('events'),
 	ControllersManager = require('./ControllersManager'),
 	ModalsManager = require('./ModalsManager'),
-	loadStyle = require('./loadStyle');
+	StyleManager = require('./StyleManager');
 
 class App {
 	constructor(){
@@ -13,7 +13,8 @@ class App {
 
 		this.modalManager = new ModalsManager(this);
 		this.controllerManager = new ControllersManager(this);
-		this.loadStyle = loadStyle;
+		this.styleManager = new StyleManager(this);
+		this.loadStyle = this.styleManager.injectStyleFile.bind(this.styleManager);
 
 		function ready(){
 			process.nextTick(function(){
