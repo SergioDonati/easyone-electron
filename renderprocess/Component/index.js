@@ -5,6 +5,7 @@ const {ipcRenderer} = require('electron'),
 	app = require('../App'),
 	ChildrenManager = require('./ChildrenManager'),
 	renderer = require('./render'),
+	utils = require('../utils'),
 	DOMEventManager = require('./DOMEventManager');
 let count = 0;
 
