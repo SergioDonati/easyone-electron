@@ -5,7 +5,7 @@ const utils = require('../utils');
 function createModalElement(args){
 	let container = utils.createElement('div', 'modal-container', 'modal-open');
 	let box = utils.createElement('div', null, 'modal-box');
-	let content = utils.createElement('div', null, 'modal-content');
+	let content = utils.createElement('div', null, 'modal-holder');
 
 	if(args.closeListener){
 		let closeBtn = utils.createElement('span', null, 'modal-close-btn');

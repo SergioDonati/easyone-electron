@@ -69,4 +69,13 @@ module.exports = class ControllersManager{
 			});
 		});
 	}
+
+	refreshActiveController(){
+		let controllerContainer = this.getControllerContainer();
+		if(!controllerContainer) return;
+		this._activeController.refresh(function(err, html){
+			if(err) return;
+			controllerContainer.appendChild(html);
+		});
+	}
 }

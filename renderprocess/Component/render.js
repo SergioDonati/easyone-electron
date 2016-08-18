@@ -5,6 +5,7 @@ const utils = require('../utils');
 function createHTMLElement(html, uniqueID, className){
 	let element = document.createElement('div');
 	element.setAttribute('id', uniqueID);
+	element.setAttribute('data-unique-id', uniqueID);
 	if(className){
 		element.className = className;
 	}
@@ -21,7 +22,8 @@ module.exports = function(component){
 
 	return function render(){
 		let callback = arguments[0];
-		let args = component.renderArgs;
+		let renderArgs = component.renderArgs;
+		let args = {};
 		let refresh = false;
 		if(arguments.length > 1){
 			args = arguments[0];
@@ -30,9 +32,9 @@ module.exports = function(component){
 		if(arguments.length > 2){
 			refresh = arguments[2];
 		}
-		let locals = args.locals || {};
-		let options = args.options || null;
-		let viewEngine = component.viewEngine || args.viewEngine || 'pug';
+		let locals = renderArgs.locals || args.locals || {};
+		let options = renderArgs.options || args.options || null;
+		let viewEngine = component.viewEngine || renderArgs.viewEngine || 'pug';
 
 		function complete(html){
 			if(html) component.HTMLElement = createHTMLElement(html, component.uniqueID, component._DOMContainerClass);

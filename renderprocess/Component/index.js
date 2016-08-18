@@ -4,7 +4,6 @@ const {ipcRenderer} = require('electron'),
 	EventEmitter = require('events'),
 	app = require('../App'),
 	ChildrenManager = require('./ChildrenManager'),
-	styleRenderer = require('./style'),
 	renderer = require('./render'),
 	DOMEventManager = require('./DOMEventManager');
 let count = 0;
@@ -27,7 +26,7 @@ module.exports = class Component {
 		this.render = renderer(this);
 
 		this.on('rendered', function(){
-			if(this.stylePath) app.styleManager.injectStyleFile(this.styleUniqueID, this.stylePath);
+			if(this.stylePath) app.styleManager.injectStyleFile(this.styleUniqueID, this.stylePath, utils.classNameToSelector(this._DOMContainerClass));
 			this._DOMEventManager.run(this.HTMLElement);
 			this._childrenManager.installChildren();
 			this._childrenManager.loadViewComponents();
@@ -84,5 +83,11 @@ module.exports = class Component {
 		app.styleManager.removeStyle(this.styleUniqueID);
 		this._childrenManager.removeAllChild();
 		this._removed = true;
+	}
+
+	refresh(callback){
+		this.remove();
+		this._removed = false;
+		this.render(callback);
 	}
 }

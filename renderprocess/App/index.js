@@ -57,6 +57,10 @@ class App {
 		this._options[name] = value;
 		this._eventEmitter.emit('options-change', name, this._options);
 	}
+
+	refreshActiveController(){
+		this.controllerManager.refreshActiveController();
+	}
 }
 
 // Singleton

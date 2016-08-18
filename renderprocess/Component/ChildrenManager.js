@@ -42,6 +42,7 @@ module.exports = class ComponentsManager{
 		return new Promise(function (resolve, reject){
 			if (!parentElement || !child) return reject(new Error('Invalid parentElement or child!'));
 			if (child.installed == true) return resolve(false);	// just installed
+			if (child.installing == true) return resolve(false);	// just installed
 			let containerElement = ComponentsManager.getChildContainer(parentElement, child);
 			if (!containerElement) return reject(new Error('container for child component not found!'));
 			let exist = containerElement.querySelector('#'+child.component.uniqueID);
@@ -53,6 +54,7 @@ module.exports = class ComponentsManager{
 				}
 				return;
 			}
+			child.installing = true;
 			child.component.render(function(err, html){
 				if(err){
 					reject(err);
@@ -61,6 +63,7 @@ module.exports = class ComponentsManager{
 					child.installed = true;
 					resolve(child);
 				}
+				child.installing = false;
 			});
 		});
 	}
@@ -88,6 +91,7 @@ module.exports = class ComponentsManager{
 			let element = elements[i];
 			let componentName = element.getAttribute('component');
 			let componentId = element.getAttribute('component-id');
+			if(!componentId) componentId = element.getAttribute('id');
 			try{
 				let component = this.createComponent(componentName);
 				this.addChild(componentId, element, component);
