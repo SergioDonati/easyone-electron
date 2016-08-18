@@ -6,8 +6,10 @@
         <script>
             const {app} = require('../main.js');
             app.on('ready', function(){
-                app.setOption('controllersPath', __dirname+'\\controllers');
-                app.setOption('modalsPath', __dirname+'\\modals');
+                app.setOptions({
+                    controllersPath: __dirname+'\\controllers',
+                    modalsPath: __dirname+'\\modals'
+                });
                 app.loadStyle('main-style', __dirname+'\\style.less');
                 app.start();
             });

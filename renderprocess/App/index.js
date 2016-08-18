@@ -58,8 +58,17 @@ class App {
 		this._eventEmitter.emit('options-change', name, this._options);
 	}
 
+	setOptions(options){
+		let keys = Object.keys(options);
+		for(let i=0;i<keys.length;i++){
+			let key = keys[i];
+			let value = options[key];
+			this.setOption(key, value);
+		}
+	}
+
 	refreshActiveController(){
-		this.controllerManager.refreshActiveController();
+		this.controllerManager.refreshController();
 	}
 }
 

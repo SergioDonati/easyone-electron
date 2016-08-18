@@ -10,6 +10,13 @@ module.exports = class ControllersManager{
 		this._activeController = null;
 	}
 
+	get activeController(){ return this._activeController; }
+
+	show(html){
+		this.clear();
+		this.controllerContainer.appendChild(html);
+	}
+
 	/**
 	 *	Can throw error
 	 */
@@ -18,22 +25,24 @@ module.exports = class ControllersManager{
 		return new controller();
 	}
 
-	getControllerContainer(){
+	get controllerContainer(){
 		let options = this._appOptions;
+		let container = window.document.body;
 		if(options.container_id){
-			return window.document.getElementById(options.container_id);
-		}else{
-			return window.document.body;
+			let c = window.document.getElementById(options.container_id);
+			if(c) container = c;
 		}
+		return container;
+	}
+
+	clear(){
+		this.removeController();
+		this.controllerContainer.innerHTML = '';
 	}
 
 	removeController(){
-		if(this._activeController){
-			this._activeController.remove();
-			this._activeController = null;
-		}
-		let controllerContainer = this.getControllerContainer();
-		controllerContainer.innerHTML = '';
+		this.activeController.remove();
+		this._activeController = null;
 	}
 
 	startNew(controller){
@@ -51,31 +60,23 @@ module.exports = class ControllersManager{
 				reject(new Error('Invalid controller!'));
 				return;
 			}
-			let controllerContainer = manager.getControllerContainer();
-			if(!controllerContainer) {
-				reject(new Error('Controller container not found!'));
-				return;
-			}
 			controller.render((err, html) => {
 				if(err) return reject(err);
 				if(!html){
 					reject(new Error('Invalid rendered.'));
 					return;
 				}
-				manager.removeController();
 				manager._activeController = controller;
-				controllerContainer.appendChild(html);
+				manager.show(html);
 				resolve(controller);
 			});
 		});
 	}
 
-	refreshActiveController(){
-		let controllerContainer = this.getControllerContainer();
-		if(!controllerContainer) return;
-		this._activeController.refresh(function(err, html){
+	refreshController(){
+		this.activeController.refresh(function(err, html){
 			if(err) return;
-			controllerContainer.appendChild(html);
+			this.controllerContainer.appendChild(html);
 		});
 	}
 }
