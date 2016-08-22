@@ -17,7 +17,7 @@ module.exports = class DOMEventManager{
 		let listener = function(e){
 			e.preventDefault();
 			try{
-				fun.apply(element, arguments);
+				fun.call(element, e, element);
 			}catch(err){
 				console.error(err.stack);
 			}

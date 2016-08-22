@@ -46,6 +46,15 @@ module.exports = class Component {
 
 	init(){}
 
+	querySelector(selector){
+		//if(!this.HTMLElement) return null;
+		return this.HTMLElement.querySelector(selector);
+	}
+	querySelectorAll(selector){
+		//if(!this.HTMLElement) return null;
+		return this.HTMLElement.querySelectorAll(selector);
+	}
+
 	addChild(id, container_selector, component){
 		if (!component instanceof Component) return;
 		this._childrenManager.addChild(id, container_selector, component);

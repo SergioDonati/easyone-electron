@@ -1,9 +1,10 @@
 {
 	"name": "easyone-electron",
-	"version": "0.0.19",
+	"version": "0.0.20",
 	"description": "A base framework for create electron application",
 	"main": "main.js",
 	"author": "donati.sergio@gmail.com",
+	"license": "GPLv3",
 	"scripts":{
 		"test": "electron ./test/starter.js"
 	},
