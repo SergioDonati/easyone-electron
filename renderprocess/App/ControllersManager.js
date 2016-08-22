@@ -41,6 +41,7 @@ module.exports = class ControllersManager{
 	}
 
 	removeController(){
+		if(!this.activeController) return;
 		this.activeController.remove();
 		this._activeController = null;
 	}
@@ -66,8 +67,8 @@ module.exports = class ControllersManager{
 					reject(new Error('Invalid rendered.'));
 					return;
 				}
-				manager._activeController = controller;
 				manager.show(html);
+				manager._activeController = controller;
 				resolve(controller);
 			});
 		});
