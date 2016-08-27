@@ -125,8 +125,11 @@ module.exports = class ComponentsManager{
 	removeAllChild(){
 		for(let i=0;i<this._children.length;i++){
 			let child = this._children[i];
-			this.removeChild(child);
+			try{
+				child.component.remove();
+			}catch(e){}
 		}
+		this._children = [];
 	}
 
 	removeChildById(id){

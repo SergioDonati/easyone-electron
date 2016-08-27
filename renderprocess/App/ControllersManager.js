@@ -20,9 +20,9 @@ module.exports = class ControllersManager{
 	/**
 	 *	Can throw error
 	 */
-	new(controllerPath){
+	new(controllerPath, ...args){
 		let controller = require(this._appOptions.controllersPath + '/' + controllerPath);
-		return new controller();
+		return new controller(...args);
 	}
 
 	get controllerContainer(){
@@ -46,12 +46,12 @@ module.exports = class ControllersManager{
 		this._activeController = null;
 	}
 
-	startNew(controller){
+	startNew(controller, ...args){
 		let manager = this;
 		return new Promise(function(resolve, reject){
 			if(typeof(controller) === 'string'){
 				try{
-					controller = manager.new(controller);
+					controller = manager.new(controller, ...args);
 				}catch(e){
 					reject(e);
 					return;

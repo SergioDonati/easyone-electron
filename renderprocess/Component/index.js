@@ -10,7 +10,8 @@ const {ipcRenderer} = require('electron'),
 let count = 0;
 
 module.exports = class Component {
-	constructor (){
+	constructor (...args){
+		if (!new^) throw Error("Not allowed to call this constructor as a function");
 		this.renderArgs = {
 			locals: {},
 			options: null
@@ -33,7 +34,7 @@ module.exports = class Component {
 			this._childrenManager.loadViewComponents();
 		});
 
-		this.init();
+		this.init(...args);
 	}
 
 	// Override this for return the values
@@ -43,6 +44,9 @@ module.exports = class Component {
 	get componentsPath(){ return app._options.controllersPath+'/../' ; }
 
 	get rendered(){ return !!this.HTMLElement; }
+	addRenderLocals(key, value){
+		this.renderArgs.locals[key] = value;
+	}
 
 	init(){}
 
@@ -95,9 +99,13 @@ module.exports = class Component {
 		this._removed = true;
 	}
 
-	refresh(callback){
+	refresh(callback, appentToParent){
+		let parent = this.HTMLElement.parentNode;
 		this.remove();
 		this._removed = false;
-		this.render(callback);
+		this.render(null, function(err, html){
+			if(!err && appendToParent == true) parent.appendChild(html);
+			if(callback) callback(err, html);
+		}, true);
 	}
 }
