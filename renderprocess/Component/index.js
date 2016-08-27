@@ -11,7 +11,6 @@ let count = 0;
 
 module.exports = class Component {
 	constructor (...args){
-		if (!new^) throw Error("Not allowed to call this constructor as a function");
 		this.renderArgs = {
 			locals: {},
 			options: null
