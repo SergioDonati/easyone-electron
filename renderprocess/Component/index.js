@@ -81,6 +81,16 @@ module.exports = class Component {
 		}
 	}
 
+	onChildReady(childId, listener){
+		let childComponent = this.getChildComponent(childId);
+		if(childComponent) listener(childComponent);
+		else{
+			this._childrenManager.on('new-child', function(id, childComponent){
+				if(id == childId) listener(childComponent);
+			});
+		}
+	}
+
 	get currentApp(){ return app; }
 
 	on(eventName, callback){
@@ -98,12 +108,15 @@ module.exports = class Component {
 		this._removed = true;
 	}
 
-	refresh(callback, appentToParent){
-		let parent = this.HTMLElement.parentNode;
+	refresh(callback, appendToParent){
+		let parent;
+		try{
+			parent = this.HTMLElement.parentNode;
+		}catch(e){}
 		this.remove();
 		this._removed = false;
 		this.render(null, function(err, html){
-			if(!err && appendToParent == true) parent.appendChild(html);
+			if(!err && appendToParent == true && parent) parent.appendChild(html);
 			if(callback) callback(err, html);
 		}, true);
 	}

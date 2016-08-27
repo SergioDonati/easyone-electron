@@ -26,7 +26,7 @@ module.exports = function(component){
 		let args = {};
 		let refresh = false;
 		if(arguments.length > 1){
-			args = arguments[0];
+			args = arguments[0] || args;
 			callback = arguments[1];
 		}
 		if(arguments.length > 2){
