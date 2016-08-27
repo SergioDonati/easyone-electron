@@ -1,6 +1,7 @@
 'use strict';
 
 const utils = require('../utils');
+const EventEmitter = require('events');
 
 module.exports = class ControllersManager{
 
@@ -8,6 +9,15 @@ module.exports = class ControllersManager{
 		this._app = app;
 		this._appOptions = app._options;
 		this._activeController = null;
+		this._emitter = new EventEmitter();
+	}
+
+	on(eventName, listener){
+		this._emitter.on(eventName, listener);
+	}
+
+	once(eventName, listener){
+		this._emitter.once(eventName, listener);
 	}
 
 	get activeController(){ return this._activeController; }
@@ -69,6 +79,7 @@ module.exports = class ControllersManager{
 				}
 				manager.show(html);
 				manager._activeController = controller;
+				manager._emitter.emit('changed', manager, controller);
 				resolve(controller);
 			});
 		});
