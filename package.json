@@ -1,6 +1,6 @@
 {
 	"name": "easyone-electron",
-	"version": "0.0.27",
+	"version": "0.0.28",
 	"description": "A base framework for create electron application",
 	"main": "main.js",
 	"author": "donati.sergio@gmail.com",

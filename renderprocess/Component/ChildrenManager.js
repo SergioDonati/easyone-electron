@@ -80,7 +80,14 @@ module.exports = class ComponentsManager{
 	}
 
 	createComponent(componentName, ...args){
-		let component = require(this._parent.componentsPath+'\\'+componentName);
+		let component;
+		try{
+			component = require(this._parent.componentsPath+'\\'+componentName);
+		}catch(e){
+			if(e.code == "MODULE_NOT_FOUND"){
+				component = require(this._parent.currentApp.sharedComponentsFolder+'\\'+componentName);
+			}else throw e;
+		}
 		return new component(...args);
 	}
 
