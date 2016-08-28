@@ -45,6 +45,9 @@ class App {
 		}
 	}
 
+	get controllersForlder(){ return this._options.controllersPath; }
+	get sharedComponentsFolder(){ return this._options.sharedComponentsPath || (this.controllersForlder+'\..'); }
+
 	getProperty(name){
 		return this._property[name];
 	}

@@ -40,7 +40,7 @@ module.exports = class Component {
 	get viewPath(){ return null; }
 	get view(){ return null; }
 	get stylePath(){ return null; }
-	get componentsPath(){ return app._options.controllersPath+'/../' ; }
+	get componentsPath(){ return app.controllersForlder+'/../' ; }
 
 	get rendered(){ return !!this.HTMLElement; }
 	addRenderLocals(key, value){
