@@ -35,17 +35,17 @@ module.exports = class ModalsManager{
 		}
 	}
 
-	new(modalPath){
+	new(modalPath, ...args){
 		let modal = require(this._appOptions.modalsPath + '/' + modalPath);
-		return new modal();
+		return new modal(...args);
 	}
 
-	startNew(modal){
+	startNew(modal, ...args){
 		let manager = this;
 		return new Promise(function(resolve, reject){
 			if(typeof(modal) === 'string'){
 				try{
-					modal = manager.new(modal);
+					modal = manager.new(modal, ...args);
 				}catch(e){
 					reject(e);
 					return;
