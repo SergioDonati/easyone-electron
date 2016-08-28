@@ -79,9 +79,9 @@ module.exports = class ComponentsManager{
 		}
 	}
 
-	createComponent(componentName){
+	createComponent(componentName, ...args){
 		let component = require(this._parent.componentsPath+'\\'+componentName);
-		return new component();
+		return new component(...args);
 	}
 
 	loadViewComponents(){
@@ -91,9 +91,10 @@ module.exports = class ComponentsManager{
 			let element = elements[i];
 			let componentName = element.getAttribute('component');
 			let componentId = element.getAttribute('component-id');
+			let data = element.getAttribute('component-data');
 			if(!componentId) componentId = element.getAttribute('id');
 			try{
-				let component = this.createComponent(componentName);
+				let component = this.createComponent(componentName, data);
 				this.addChild(componentId, element, component);
 			}catch(e){
 				console.error(e.stack);
