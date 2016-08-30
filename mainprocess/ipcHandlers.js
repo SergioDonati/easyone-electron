@@ -8,6 +8,8 @@ const path = require('path');
 
 module.exports = function(options){
 	options = options || {};
+	let lessStylePath = (options.less && options.less.basedir) || null;
+	let pugBasedir = (options.pug && options.pug.basedir) || null;
 	if(!ipcMain) {
 		console.warn('ipcMain is void');
 		return;
@@ -24,6 +26,8 @@ module.exports = function(options){
 	});
 
 	ipcMain.on('easyone-pug-render', function(event, args){
+		args.options = args.options || {};
+		if(!args.options.basedir && pugBasedir) args.options.basedir = pugBasedir;
 		let fn = pug.compileFile(args.filePath, args.options);
 		// TODO cache fn for improve performance
 		let html = fn(args.locals);
@@ -34,7 +38,7 @@ module.exports = function(options){
 		args.options = args.options || {};
 		args.options.fileName = path.parse(args.filePath).base;
 		args.options.paths = [path.parse(args.filePath).dir];
-		if(options.stylePath) args.options.paths.push(options.stylePath);
+		if(lessStylePath) args.options.paths.push(lessStylePath);
 		// TODO cache style for improve performance
 		fs.readFile(args.filePath, (err, data) =>{
 			if(err) throw err;
