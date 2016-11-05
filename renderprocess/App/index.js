@@ -1,9 +1,9 @@
 'use strict';
 
-const EventEmitter = require('events'),
-	ControllersManager = require('./ControllersManager'),
-	ModalsManager = require('./ModalsManager'),
-	StyleManager = require('./StyleManager');
+const EventEmitter = require('events');
+const ControllersManager = require('./ControllersManager');
+const ModalsManager = require('./ModalsManager');
+const StyleManager = require('./StyleManager');
 
 class App {
 	constructor(){
@@ -53,7 +53,15 @@ class App {
 	}
 
 	setProperty(name, value){
+		const oldValue = this._property[name];
 		this._property[name] = value;
+		this._eventEmitter.emit('propertyChanged', name, value, oldValue);
+	}
+
+	onPropertyChanged(name, listener){
+		this._eventEmitter.on('propertyChanged', function(propertyName, newValue, oldValue){
+			if(name == propertyName) listener(newValue, oldValue);
+		})
 	}
 
 	setOption(name, value){
