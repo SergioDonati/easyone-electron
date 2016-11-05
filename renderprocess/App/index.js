@@ -24,13 +24,15 @@ class App {
 		};
 		if(document.readyState === 'complete') ready.call(this);
 		else document.addEventListener('DOMContentLoaded', ready.bind(this), false);
+
 	}
 
 	get isReady(){ return this._isReady; }
 
 	on(eventName, listener){
 		if(eventName === 'ready' && this.isReady){
-			listener(this);
+			if (this.isReady) listener(this);
+			else this._eventEmitter.once(eventName, listener);
 			return;
 		}
 		this._eventEmitter.on(eventName, listener);
@@ -56,12 +58,6 @@ class App {
 		const oldValue = this._property[name];
 		this._property[name] = value;
 		this._eventEmitter.emit('propertyChanged', name, value, oldValue);
-	}
-
-	onPropertyChanged(name, listener){
-		this._eventEmitter.on('propertyChanged', function(propertyName, newValue, oldValue){
-			if(name == propertyName) listener(newValue, oldValue);
-		})
 	}
 
 	setOption(name, value){
