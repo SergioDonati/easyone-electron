@@ -1,24 +1,17 @@
 'use strict';
 
-const {Controller, app} = require('../../../main.js');
+module.exports = function Home(app, controller){
 
-module.exports = class Home extends Controller{
+	controller.useDefaultPaths(__dirname);
 
-    get viewPath(){ return __dirname+'\\view.pug'; }
-    get componentsPath(){ return __dirname+'\\components'; }
+	controller.addChildDOMListener('main-menu', 'menuTestClick', function(){
+        controller.removeChildIn('#content');
+        controller.addChild("test_id", "#content", "test");
+    });
 
-    init(){
-        let self = this;
-        self.addChildDOMListener('main-menu', 'menuTestClick', function(){
-            self._childrenManager.clear('#content');
-            self.addChild("test", "#content", "test");
+    controller.addChildDOMListener('main-menu', 'testModal', function(){
+        app.modalManager.startNew("msg").catch(function(e){
+            console.error(e.stack);
         });
-
-        self.addChildDOMListener('main-menu', 'testModal', function(){
-            app.modalManager.startNew("msg").catch(function(e){
-                console.error(e.stack);
-            });
-        });
-    }
-
+    });
 }

@@ -18,8 +18,14 @@ let defaultPugOptions = {
 	compileDebug: true
 };
 
-module.exports = function(component){
+module.exports = function Renderer(component){
 
+	/**
+	 *	if HTMLElement just exists and refresh is false, use the HTMLElement
+	 *	else if viewTemplate exists, generate html from viewTemplate (take locals and convert in html)
+	 *	else if view is defined return it as html
+	 *	else if viewPath is defined use the viewEngine for compile file to html
+	 */
 	return function render(){
 		let callback = arguments[0];
 		let renderArgs = component.renderArgs;

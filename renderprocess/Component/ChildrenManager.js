@@ -1,6 +1,7 @@
 'use strict';
 
 const EventEmitter = require('events');
+const path = require('path');
 
 module.exports = class ComponentsManager{
 
@@ -79,16 +80,27 @@ module.exports = class ComponentsManager{
 		}
 	}
 
+	/**
+	 * Instantiate a new Component
+	 */
 	createComponent(componentName, ...args){
-		let component;
+		let directoryPath = path.join(this._parent.componentsPath, componentName);
+		let initializer;
 		try{
-			component = require(this._parent.componentsPath+'\\'+componentName);
+			initializer = require(directoryPath);
 		}catch(e){
-			if(e.code == "MODULE_NOT_FOUND"){
-				component = require(this._parent.currentApp.sharedComponentsFolder+'\\'+componentName);
+			if(e.code == 'MODULE_NOT_FOUND'){
+				directoryPath = path.join(this._parent.currentApp.sharedComponentsFolder, componentName);
+				initializer = require(directoryPath);
 			}else throw e;
 		}
-		return new component(...args);
+		const Component = require('../Component');
+		let component = (initializer instanceof Component)
+			? new initializer(this._parent.currentApp, initializer.constructor.name, directoryPath)
+		 	: new Component(this._parent.currentApp, initializer.name, directoryPath);
+		if(typeof initializer == 'function') initializer(app, component, ...args);
+		console.log('initializer type: '+typeof(initializer));
+		return component;
 	}
 
 	loadViewComponents(){
@@ -110,7 +122,8 @@ module.exports = class ComponentsManager{
 	}
 
 	clear(containerSelector){
-		let containerElement = this._parent.HTMLElement.querySelector(containerSelector);
+		if(containerSelector == '_parent') return this.removeAllChild();
+		const containerElement = this._parent.HTMLElement.querySelector(containerSelector);
 		if(!containerElement) return;
 		for(let i=0;i<this._children.length;i++){
 			let child = this._children[i];
@@ -146,31 +159,36 @@ module.exports = class ComponentsManager{
 	}
 
 	addChild(id, container, component){
-		if(typeof(component) == 'string'){
-			try{
-				component = this.createComponent(component);
-			}catch(e){
-				console.error(e.stack);
+		const manager = this;
+		return new Promise(function (resolve, reject){
+			if(typeof(component) == 'string'){
+				try{
+					component = manager.createComponent(component);
+				}catch(e){
+					reject(e);
+					return;
+				}
 			}
-		}
-		if(!component) {
-			console.error('Invalid component!');
-			return;
-		}
-		let child = {
-			id: id,
-			component: component,
-			installed: false
-		};
-		if(typeof(container) == 'string'){
-			child.container_selector = container;
-		}else{
-			// is HTMLElement
-			child.container_element = container;
-		}
-		this._children.push(child);
-		this._emitter.emit('children-changed', this);
-		this._emitter.emit('new-child', id, component);
-		if(this._parent.HTMLElement) this.installChildren();
+			if(!component || !component.render) {
+				reject(new Error('Invalid component!'));
+				return;
+			}
+			let child = {
+				id: id,
+				component: component,
+				installed: false
+			};
+			if(typeof(container) == 'string'){
+				child.container_selector = container;
+			}else{
+				// is HTMLElement
+				child.container_element = container;
+			}
+			manager._children.push(child);
+			manager._emitter.emit('children-changed', manager);
+			manager._emitter.emit('new-child', id, component);
+			if(manager._parent.HTMLElement) manager.installChildren();
+			resolve(component);
+		});
 	}
 }

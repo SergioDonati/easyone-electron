@@ -2,7 +2,11 @@
 
 const {app, BrowserWindow} = require('electron');
 
-require('../main.js')({ stylePath: __dirname+'\\style' });
+require('../main.js')({
+	less: {
+		basedir: __dirname+'\\style'
+	}
+});
 
 let mainWindow = null;
 

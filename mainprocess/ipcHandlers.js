@@ -11,7 +11,7 @@ module.exports = function(options){
 	let lessStylePath = (options.less && options.less.basedir) || null;
 	let pugBasedir = (options.pug && options.pug.basedir) || null;
 	if(!ipcMain) {
-		console.warn('ipcMain is void');
+		console.warn('ipcMain is undefined');
 		return;
 	}
 	ipcMain.on('easyone-readFile', function(event, args){

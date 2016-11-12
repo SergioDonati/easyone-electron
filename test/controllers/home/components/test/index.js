@@ -1,14 +1,8 @@
 'use strict';
 
-const {Component} = require('../../../../../main.js');
+module.exports = function TestComponent(app, component){
 
-module.exports = class TestComponent extends Component{
-
-    get viewPath(){ return __dirname+'\\view.pug'; }
-    get componentsPath(){ return __dirname+'\\..'; }
-
-    init(){
-        this.renderArgs.locals.uniqueID = this.uniqueID;
-    }
+	component.setRelativeComponentsPath('..');
+	component.addRenderLocals('uniqueID', component.uniqueID);
 
 }

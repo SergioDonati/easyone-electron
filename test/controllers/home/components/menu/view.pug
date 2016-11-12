@@ -1,6 +1,7 @@
 mixin link(text, eventFun)
-    li: a(href='#', bind-event=true, bind-event-click=eventFun)= text
+	li: a(href='#', bind-event=true, bind-event-click=eventFun)= text
 
 ul
-    +link("Test", "menuTestClick")
-    +link("Modal", "testModal")
+	+link("Test", "menuTestClick")
+	+link("View", "menuViewClick")
+	+link("Modal", "testModal")

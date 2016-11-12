@@ -4,12 +4,11 @@
         <meta charset="UTF-8">
         <title>Testing</title>
         <script>
-            const {app} = require('../main.js');
-            app.on('ready', function(){
-                app.setOptions({
-                    controllersPath: __dirname+'\\controllers',
-                    modalsPath: __dirname+'\\modals'
-                });
+            const {App} = require('../main.js');
+			const app = new App({
+				controllersPath: __dirname+'\\controllers',
+				modalsPath: __dirname+'\\modals'
+			}, function(){
                 app.loadStyle('main-style', __dirname+'\\style.less');
                 app.start();
             });

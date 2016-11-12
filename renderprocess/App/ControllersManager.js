@@ -2,6 +2,7 @@
 
 const utils = require('../utils');
 const EventEmitter = require('events');
+const path = require('path');
 
 module.exports = class ControllersManager{
 
@@ -28,11 +29,16 @@ module.exports = class ControllersManager{
 	}
 
 	/**
+	 *	Create new Controller
 	 *	Can throw error
 	 */
 	new(controllerPath, ...args){
-		let controller = require(this._appOptions.controllersPath + '/' + controllerPath);
-		return new controller(...args);
+		const Controller = require('../Controller');
+		const directoryPath = path.join(this._appOptions.controllersPath, controllerPath);
+		const initializer = require(directoryPath);
+		const controller = new Controller(this._app, initializer.name, directoryPath);
+		initializer(this._app, controller, ...args);
+		return controller;
 	}
 
 	get controllerContainer(){

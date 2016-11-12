@@ -13,7 +13,7 @@ function isRenderer () {
 if(isRenderer()){
 	module.exports = {
 		Component: require('./renderprocess/Component'),
-		app: require('./renderprocess/App'),
+		App: require('./renderprocess/App'),
 		Controller: require('./renderprocess/Controller'),
 		Modal: require('./renderprocess/Modal')
 	}
