@@ -98,7 +98,7 @@ module.exports = class ComponentsManager{
 		let component = (initializer instanceof Component)
 			? new initializer(this._parent.currentApp, initializer.constructor.name, directoryPath)
 		 	: new Component(this._parent.currentApp, initializer.name, directoryPath);
-		if(typeof initializer == 'function') initializer(app, component, ...args);
+		if(typeof initializer == 'function') initializer(this._parent.currentApp, component, ...args);
 		console.log('initializer type: '+typeof(initializer));
 		return component;
 	}
