@@ -84,22 +84,27 @@ module.exports = class ComponentsManager{
 	 * Instantiate a new Component
 	 */
 	createComponent(componentName, ...args){
-		let directoryPath = path.join(this._parent.componentsPath, componentName);
-		let initializer;
-		try{
-			initializer = require(directoryPath);
-		}catch(e){
-			if(e.code == 'MODULE_NOT_FOUND'){
-				directoryPath = path.join(this._parent.currentApp.sharedComponentsFolder, componentName);
+		let directoryPath;
+		if(typeof(componentName) == 'string'){
+			directoryPath = path.join(this._parent.componentsPath, componentName);
+			let initializer;
+			try{
 				initializer = require(directoryPath);
-			}else throw e;
+			}catch(e){
+				if(e.code == 'MODULE_NOT_FOUND'){
+					directoryPath = path.join(this._parent.currentApp.sharedComponentsFolder, componentName);
+					initializer = require(directoryPath);
+				}else throw e;
+			}
+		}else if(typeof(componentName) == 'function' || typeof(componentName) == 'object'){
+			directoryPath = this._parent.directoryPath;
+			initializer = componentName;
 		}
 		const Component = require('../Component');
 		let component = (initializer instanceof Component)
 			? new initializer(this._parent.currentApp, initializer.constructor.name, directoryPath)
 		 	: new Component(this._parent.currentApp, initializer.name, directoryPath);
 		if(typeof initializer == 'function') initializer(this._parent.currentApp, component, ...args);
-		console.log('initializer type: '+typeof(initializer));
 		return component;
 	}
 
@@ -161,7 +166,7 @@ module.exports = class ComponentsManager{
 	addChild(id, container, component){
 		const manager = this;
 		return new Promise(function (resolve, reject){
-			if(typeof(component) == 'string'){
+			if(typeof(component) == 'string' || typeof(component) == 'function' || typeof(component) == 'object'){
 				try{
 					component = manager.createComponent(component);
 				}catch(e){
