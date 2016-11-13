@@ -42,10 +42,28 @@ module.exports = class Component {
 		this.componentsPath = app.sharedComponentsFolder ? app.sharedComponentsFolder : path.join(this.directoryPath, 'components');
 
 		this.useDefaultPaths();
+		init();
+	}
+
+	init(){
+		// override this
 	}
 
 	useDefaultPaths(directoryPath){
 		if(directoryPath) this.directoryPath = directoryPath;
+
+		/**
+		 * Test id directoryPath is a folder
+		 */
+		try{
+ 			const directoryPathStats = fs.statSync(this.directoryPath);
+ 			if(! directoryPathStats.isDirectory()){
+				this.directoryPath = path.join(directoryPath, '..');
+			}
+ 		}catch(e){
+			this.directoryPath = path.join(directoryPath, '..');
+		}
+
 		/**
 		 * 	Test if the default view path exist
 		 */
@@ -136,7 +154,7 @@ module.exports = class Component {
 	 * 	@param function listener
 	 */
 	addChildDOMListener(childId, eventName, listener){
-		let childComponent = this.getChildComponent(childId);
+		const childComponent = this.getChildComponent(childId);
 		if(childComponent) childComponent.addDOMListener(eventName, listener);
 		this._childrenManager.on('new-child', function(id, childComponent){
 			if(id == childId) childComponent.addDOMListener(eventName, listener);
@@ -144,7 +162,7 @@ module.exports = class Component {
 	}
 
 	onChildReady(childId, listener){
-		let childComponent = this.getChildComponent(childId);
+		const childComponent = this.getChildComponent(childId);
 		if(childComponent) listener(childComponent);
 		this._childrenManager.on('new-child', function(id, childComponent){
 			if(id == childId) listener(childComponent);

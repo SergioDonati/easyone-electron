@@ -8,8 +8,8 @@ const path = require('path');
 
 module.exports = function(options){
 	options = options || {};
-	let lessStylePath = (options.less && options.less.basedir) || null;
-	let pugBasedir = (options.pug && options.pug.basedir) || null;
+	const lessStylePath = (options.less && options.less.basedir) || null;
+	const pugBasedir = (options.pug && options.pug.basedir) || null;
 	if(!ipcMain) {
 		console.warn('ipcMain is undefined');
 		return;

@@ -18,7 +18,7 @@ module.exports = class ComponentsManager{
 	}
 
 	getChildComponent(id){
-		let child = this.getChild(id);
+		const child = this.getChild(id);
 		if(child) return child.component;
 		return null;
 	}
@@ -44,9 +44,9 @@ module.exports = class ComponentsManager{
 			if (!parentElement || !child) return reject(new Error('Invalid parentElement or child!'));
 			if (child.installed == true) return resolve(false);	// just installed
 			if (child.installing == true) return resolve(false);	// just installed
-			let containerElement = ComponentsManager.getChildContainer(parentElement, child);
+			const containerElement = ComponentsManager.getChildContainer(parentElement, child);
 			if (!containerElement) return reject(new Error('container for child component not found!'));
-			let exist = containerElement.querySelector('#'+child.component.uniqueID);
+			const exist = containerElement.querySelector('#'+child.component.uniqueID);
 			if (exist) {
 				if(child.component.rendered){
 					child.installed = true;
@@ -70,7 +70,7 @@ module.exports = class ComponentsManager{
 	}
 
 	installChildren(){
-		let parentElement = this._parent.HTMLElement;
+		const parentElement = this._parent.HTMLElement;
 		if(!parentElement || !this._children) return;
 		for(let i=0;i<this._children.length;i++){
 			let child = this._children[i];
@@ -110,7 +110,7 @@ module.exports = class ComponentsManager{
 
 	loadViewComponents(){
 		if(!this._parent.HTMLElement) return;
-		let elements = this._parent.HTMLElement.querySelectorAll('[dynamicload-component="dynamicload-component"]');
+		const elements = this._parent.HTMLElement.querySelectorAll('[dynamicload-component="dynamicload-component"]');
 		for(let i=0;i<elements.length;i++){
 			let element = elements[i];
 			let componentName = element.getAttribute('component');
@@ -141,7 +141,7 @@ module.exports = class ComponentsManager{
 
 	removeChild(child){
 		if (!child) return;
-		let index = this._children.indexOf(child);
+		const index = this._children.indexOf(child);
 		if ( index > -1){
 			this._children.splice(index, 1);
 		}
@@ -159,7 +159,7 @@ module.exports = class ComponentsManager{
 	}
 
 	removeChildById(id){
-		let child = this.getChild(id);
+		const child = this.getChild(id);
 		this.removeChild(child);
 	}
 
@@ -178,7 +178,7 @@ module.exports = class ComponentsManager{
 				reject(new Error('Invalid component!'));
 				return;
 			}
-			let child = {
+			const child = {
 				id: id,
 				component: component,
 				installed: false

@@ -25,7 +25,7 @@ module.exports = class Modal extends Component{
 	}
 
 	render(){
-		if(this._closed===true) return;
+		if(this.isClosed) return;
 		super.render.apply(this, arguments);
 	}
 }

@@ -1,12 +1,12 @@
 {
   "name": "easyone-electron",
-  "version": "0.1.2",
-  "description": "A base framework for create electron application",
+  "version": "0.1.3",
+  "description": "A framework for create electron application",
   "main": "main.js",
   "author": "donati.sergio@gmail.com",
   "license": "GPL-3.0",
   "scripts": {
-    "test": "electron ./test/starter.js"
+    "test": "electron ./example/starter.js"
   },
   "repository": {
     "type": "git",
