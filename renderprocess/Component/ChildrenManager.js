@@ -85,9 +85,9 @@ module.exports = class ComponentsManager{
 	 */
 	createComponent(componentName, ...args){
 		let directoryPath;
+		let initializer;
 		if(typeof(componentName) == 'string'){
 			directoryPath = path.join(this._parent.componentsPath, componentName);
-			let initializer;
 			try{
 				initializer = require(directoryPath);
 			}catch(e){
