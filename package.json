@@ -1,6 +1,6 @@
 {
   "name": "easyone-electron",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "private": false,
   "description": "A framework for create electron application",
   "author": {

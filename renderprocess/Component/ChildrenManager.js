@@ -114,7 +114,7 @@ module.exports = class ComponentsManager{
 		for(let i=0;i<elements.length;i++){
 			const element = elements[i];
 			const componentName = element.getAttribute('component');
-			const componentId = element.getAttribute('component-id');
+			let componentId = element.getAttribute('component-id');
 			const data = element.getAttribute('component-data');
 			if(!componentId) componentId = element.getAttribute('id');
 			try{
