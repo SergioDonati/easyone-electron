@@ -21,7 +21,7 @@
     "pug": "^2.0.0-beta4"
   },
   "devDependencies": {
-    "electron-prebuilt": "^1.4.6"
+    "electron": "*"
   },
   "engines": {
     "node": ">= 6.5.0"

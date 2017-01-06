@@ -101,8 +101,8 @@ module.exports = class ComponentsManager{
 			initializer = componentName;
 		}
 		const Component = require('../Component');
-		let component = (initializer instanceof Component)
-			? new initializer(this._parent.currentApp, initializer.constructor.name, directoryPath)
+		const component = (initializer instanceof Component)
+			? initializer//new initializer(this._parent.currentApp, initializer.constructor.name, directoryPath)
 		 	: new Component(this._parent.currentApp, initializer.name, directoryPath);
 		if(typeof initializer == 'function') initializer(this._parent.currentApp, component, ...args);
 		return component;
@@ -112,13 +112,13 @@ module.exports = class ComponentsManager{
 		if(!this._parent.HTMLElement) return;
 		const elements = this._parent.HTMLElement.querySelectorAll('[dynamicload-component="dynamicload-component"]');
 		for(let i=0;i<elements.length;i++){
-			let element = elements[i];
-			let componentName = element.getAttribute('component');
-			let componentId = element.getAttribute('component-id');
-			let data = element.getAttribute('component-data');
+			const element = elements[i];
+			const componentName = element.getAttribute('component');
+			const componentId = element.getAttribute('component-id');
+			const data = element.getAttribute('component-data');
 			if(!componentId) componentId = element.getAttribute('id');
 			try{
-				let component = this.createComponent(componentName, data);
+				const component = this.createComponent(componentName, data);
 				this.addChild(componentId, element, component);
 			}catch(e){
 				console.error(e.stack);
