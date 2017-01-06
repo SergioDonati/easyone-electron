@@ -42,7 +42,7 @@ module.exports = class Component {
 		this.componentsPath = app.sharedComponentsFolder ? app.sharedComponentsFolder : path.join(this.directoryPath, 'components');
 
 		this.useDefaultPaths();
-		init();
+		this.init();
 	}
 
 	init(){
