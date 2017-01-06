@@ -61,7 +61,9 @@ module.exports = class Component {
 				this.directoryPath = path.join(directoryPath, '..');
 			}
  		}catch(e){
-			this.directoryPath = path.join(directoryPath, '..');
+			console.error(e);
+			console.log('directoryPath '+directoryPath);
+			//this.directoryPath = path.join(directoryPath, '..');
 		}
 
 		/**
